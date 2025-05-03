@@ -13,16 +13,112 @@
 #define HIDDENWORD "mystery.txt"
 
 
-
+//Function Type/Name: Void getMysteryWord
+//Input: a character array to hold the string for the mystery word. 
+//an int to define the max length. A _Bool that controls the game flow
+//Output: Void function type. Using pass by address updates the mystery 
+//word array. Updates Bool value accordingly. 
+//Function Behavior: Retrieves the word from the file, if the text file 
+//is not there displays the appropriate message and tells the game to 
+//finish with the Bool function.	
 void getMysteryWord(char mysWor[], int mysLength, _Bool *finish);
+
+
+//Function Type/Name: Void buildGameBoard
+//Input: The int values for height (rows) and length (col) of the 
+//2D array that is the game board.
+//Output: Void type with no return. Pass by address to build a gameboard
+// with null characters in the last comlumn and starts with empty spaces
+//for all other elements.
+//Function Behavior: Starts a new gameboard at the begining of the game 
+//with null characters in the last column.	
 void buildGameBoard(int height, int length,char wordBoard[][length]);
+
+
+//Function Type/Name: Void type function. userInput
+//Input: An array for the to hold the value of the user guess. An int 
+//value assigned to the length of the user guess. A Bool variable to 
+//determine if the guess is valid or if a new input is needed. An int 
+//type variable for the guess attempt currently being requested.
+//Output: Void function type. Uses pass by address to get values of 
+//the user input.
+//Function Behavior: Gives the appropriate message request determined by number
+//of attempts for user guess or by the tryAgain boolean. 	
 void userInput(char guessWord[],int guessLength, _Bool tryAgain, int guessNum);
-_Bool checkLength(char userGuess[], int guessSize);
+
+
+//Function Type/Name: _Bool type function. checkLength
+//Input: The current guess word from the user in an array. The int to define 
+//the user guess array. The allowed size determined by a Macro
+//Output: A Bool variable defining valid length.
+//Function Behavior: Using the count variable, the function iterates through the
+//user input and determines how long the input is. If it is not the correct 
+//length a print statement lets the user know. A boolean is returned to the main 
+//controling flow if a new guess is needed or not.
+_Bool checkLength(char userGuess[], int guessSize, int allowedSize);
+
+
+//Function Type/Name: _Bool type function. checkChars
+//Input: An array holding the user guess, an int value to define the array.
+//Output: A boolean value for valid or invalid characters
+//Function Behavior: A for loop to iterate through the userGuess array 
+//and determine if the elements contain the correct characters. 	
 _Bool checkChars(char userGuess[],int size);
+
+
+//Function Type/Name: Void function type. lowerCase
+//Input: An array containing the user guess and an int to define the user guess.
+//Output:Pass by address to update the userguess if any of the characters are 
+//uppercase to lowercase
+//Function Behavior: Compares the values of the user guess to uppercase values.
+//If uppercase values are found converts them to lower case letters.	
 void lowerCase(char guessWord[], int guessLength);
+
+
+//Function Type/Name: Void function type. compareWords
+//Input: Two int values to define the gameboard height and length. The 2D array 
+//for the gameboard. The array containing the user guess with its int type for 
+//defining length. The hidden word to be guessed in an array and its int value 
+//for defining length. The current guess attempt. Pointer to a boolean value for 
+//if the puzzle has been solved.
+//Output: Pass by address the updated game board with correct values. Bool 
+//variable that determines if solved or not. 
+//Function Behavior: The mystery word is assigned to a new 1D array. The new array 
+//is compared to the user guess word. If the letters match the comparisonarray 
+//element is replaced with a blank to avoid duplication. The values of the nested 
+//for loop are incremented to start the comparison over. Pass by adress to the 
+//game board with the user guess in the correct row along with assigning it an 
+//uppercase value if needed. The carrot is also assigned to the correct element.
+//Both of these steps are completed by using nested for loops to compare the guess 
+//word with the mystery word. When characters match a count variable increments by 
+//1. If the count variable matches the length of the hidden word the boolean 
+//variable is now true and the puzzle is solved.
 void compareWords(int rowIndex, int colIndex, char wordBoard[][colIndex], char guessWord[], int guessLength, char hiddenWord[], int hiddenLength, int guessNum, _Bool *solver);
+
+
+//Function Type/Name: Void function type. finalMesssage
+//Input: An array for the last user guess. An int defining the user guess array. 
+//An int for the last attempt number.
+//Output: Print to screen the appropriate message to the user.
+//Function Behavior: If the number of attempts is 7 tells the player they lost. 
+//Otherwise displays the correct message determined by current attempt. Selection 
+//is made with a switch statement. 	
 void finalMessage(char guessWord[], int guessLength, int guessNum);
+
+
+//Function Type/Name: Void function type. displayBoard
+//Input: The two int values defining the rows and cols in the game board. An array 
+//for the 2D gameboard. The current guess the user just made.
+//Output:Prints to screen the the game board.
+//Function Behavior: Using a for loop to determine the number of rows from the 
+//game board needed and prints to screen these rows.	
 void displayBoard(int rowIndex, int colIndex, char wordBoard[][colIndex], int guessNum);
+
+
+//Function Type/Name: Void functin type. banner
+//Input: the length of the banner from the macro
+//Output: No return value. Prints to screen the banner when called
+//Function Behavior: Using a for loop to print the banner at the defined length
 void banner(int width);
 
 
@@ -50,7 +146,7 @@ char gameBoard[BOARDHEIGHT][BOARDLENGTH], playerGuess[MAXLENGTH], mysteryWord[MA
 			
 			userInput(playerGuess, MAXLENGTH, guessAgain, attempt);
 			lowerCase(playerGuess, MAXLENGTH);
-			validLength = checkLength(playerGuess, MAXLENGTH);
+			validLength = checkLength(playerGuess, MAXLENGTH, WORDLENGTH);
 			validChar = checkChars(playerGuess, MAXLENGTH);
 			if ((validLength == 0) || (validChar == 0)){
 				validInput = 0;
@@ -126,14 +222,14 @@ void lowerCase(char guessWord[], int guessLength){
 	}
 }
 
-_Bool checkLength(char userGuess[], int guessSize){
-int count = 0, goodLength = 5;
+_Bool checkLength(char userGuess[], int guessSize, int allowedSize){
+int count = 0;
 _Bool validL = 1;
 	
 	for(int i = 0; userGuess[i] != '\0'; i++){
 		count++;
 	}
-	if (count != goodLength){
+	if (count != allowedSize){
 		validL = 0;
 		printf("Your guess must be 5 letters long. ");	
 	}
